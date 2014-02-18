@@ -108,4 +108,49 @@ class PostTest extends CakeTestCase {
 
 		$this->assertEquals($expectedArrayDiffResult, $recordCompare);
 	}
+
+	/**
+	 * @test
+	 */
+	public function postWithEmptyTitleDoesNotValidateModel () {
+		$postData = array (
+			'title' => '',
+			'body'  => 'Oh no, this post has and empty title!'
+		);
+		$result = $this->Post->addPost($postData);
+		$invalidFields = $this->Post->invalidFields();
+
+		$this->assertFalse($result);
+		$this->assertContains('This field cannot be left blank', $invalidFields['title']);
+	}
+
+	/**
+	 * @test
+	 */
+	public function postWithEmptyBodyDoesNotValidateModel () {
+		$postData = array (
+			'title' => 'No body in the post? Impossible.',
+			'body'  => ''
+		);
+		$result = $this->Post->addPost($postData);
+		$invalidFields = $this->Post->invalidFields();
+
+		$this->assertFalse($result);
+		$this->assertContains('This field cannot be left blank', $invalidFields['body']);
+	}
+
+	/**
+	 * @test
+	 */
+	public function postWithNotEmptyTitleAndBodyValidatesModel () {
+		$postData = array (
+			'title' => 'Title...',
+			'body' => '... and body.'
+		);
+		$result = $this->Post->addPost($postData);
+		$invalidFields = $this->Post->invalidFields();
+
+		$this->assertFalse(empty($result));
+		$this->assertTrue(empty($invalidFields));
+	}	
 }
