@@ -69,4 +69,43 @@ class PostTest extends CakeTestCase {
         $this->assertTrue($numRecordsBeforePostSave != $numRecordsAfterPostSave);
         $this->assertEquals($expected, $result);
 	}
+
+	/**
+	 * @test
+	 */
+	public function editedPostShouldReflectNewData() {
+		$this->Post->id = 3;
+		$postData = array (
+			'title' => 'Test Post Title. Updated.',
+			'body' => 'We love TDD. Yeah! Yeah!',
+			'created' => '2012-07-04 10:43:23',
+			'updated' => '2012-07-04 10:49:51'
+		);
+		$postRecordBeforeEdit = $this->Post->read();
+		$numRecordsBeforePostEdit = $this->Post->find('count');
+		$result = $this->Post->editPost($postData);
+		$numRecordsAfterPostEdit = $this->Post->find('count');
+
+		$expected = array (
+			'Post' => array (
+				'id' => '3',
+                'title' => 'Test Post Title. Updated.',
+                'body' => 'We love TDD. Yeah! Yeah!',
+                'created' => '2012-07-04 10:43:23',
+                'updated' => '2012-07-04 10:49:51'
+			)
+		);
+
+		$this->assertEquals($expected, $result);
+		$this->assertTrue($numRecordsBeforePostEdit == $numRecordsAfterPostEdit);
+
+		$recordCompare = array_diff($postRecordBeforeEdit['Post'], $result['Post']);
+		$expectedArrayDiffResult = array (
+			'title' => 'Title strikes back',
+        	'body' => 'This is really exciting! Not.',
+        	'updated' => '2012-07-04 10:45:31'
+		);
+
+		$this->assertEquals($expectedArrayDiffResult, $recordCompare);
+	}
 }

@@ -15,4 +15,8 @@ class Post extends AppModel {
 	public function addPost ($postData) {
 		return $this->save($postData);
 	}
+
+	public function editPost($postData) {
+		return $this->save($postData);
+	}
 }
