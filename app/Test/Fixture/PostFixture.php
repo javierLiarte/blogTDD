@@ -1,5 +1,6 @@
 <?php
 class PostFixture extends CakeTestFixture {
+	public $useDbConfig = 'test';
 	public $fields = array (
 		'id'      => array('type' => 'integer',
 					'key' => 'primary'),

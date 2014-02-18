@@ -11,4 +11,8 @@ class Post extends AppModel {
 			'conditions' => array('id' => $id)
 		));
 	}
+
+	public function addPost ($postData) {
+		return $this->save($postData);
+	}
 }

@@ -1,7 +1,7 @@
 <?php
 App::uses('Post', 'Model');
 
-class PostTest extends PHPUnit_Framework_TestCase {
+class PostTest extends CakeTestCase {
 	public $fixtures = array('app.post');
 
 	public function setUp () {
@@ -38,5 +38,35 @@ class PostTest extends PHPUnit_Framework_TestCase {
 			)
 		);
 		$this->assertEquals($expected,$result);
+	}
+
+	/**
+	 * @test
+	 */
+	public function aNewPostIsSavedAndReflectsOriginalData() {
+		$postData = array(
+			'title'   => 'Test Post Title',
+			'body'    => 'We love TDD. Yeah!',
+			'created' => '2012-07-04 10:43:23',
+			'updated' => '2012-07-04 10:45:31'
+		);
+
+		$numRecordsBeforePostSave = $this->Post->find('count');
+		$result = $this->Post->addPost($postData);
+		$numRecordsAfterPostSave = $this->Post->find('count');
+
+		$expected = array(
+            'Post' => array(
+                'id'      => '4',
+                'title'   => 'Test Post Title',
+                'body'    => 'We love TDD. Yeah!',
+                'created' => '2012-07-04 10:43:23',
+                'updated' => '2012-07-04 10:45:31'
+            )
+        );
+
+        $this->assertEquals($numRecordsBeforePostSave+1, $numRecordsAfterPostSave);
+        $this->assertTrue($numRecordsBeforePostSave != $numRecordsAfterPostSave);
+        $this->assertEquals($expected, $result);
 	}
 }
