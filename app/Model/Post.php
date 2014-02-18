@@ -5,4 +5,10 @@ class Post extends AppModel {
 			'fields' => array ('id', 'title')
 			));
 	}
+
+	public function getSinglePost($id = null) {
+		return $this->find('first', array (
+			'conditions' => array('id' => $id)
+		));
+	}
 }
