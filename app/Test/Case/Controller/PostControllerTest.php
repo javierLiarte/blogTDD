@@ -35,4 +35,46 @@ class PostControllerTest extends ControllerTestCase {
 		);
 		$this->assertEquals($expected, $this->vars['post']);
 	}
+
+	/**
+	 * @test
+	 */
+	public function addPostWithValidDataShouldCreateNewPost () {
+		$postData = array (
+			'Post' => array (
+				'title' => 'New Post Title',
+				'body'  => 'TDD FTW!'
+			)
+		);
+
+		$this->testAction('/posts/add', array(
+			'data'   => $postData,
+			'method' => 'post'
+			));
+
+		$this->assertStringEndsWith('/posts', $this->headers['Location']);
+		$this->assertEquals(4, $this->controller->Post->find('count'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function addPostWithInalidDataShouldNotCreateNewPost () {
+		$postData = array (
+			'Post' => array (
+				'title' => '',
+				'body'  => 'TDD FTW!'
+			)
+		);
+
+		$this->testAction('/posts/add', array(
+			'data'   => $postData,
+			'method' => 'post'
+			));
+
+		$this->assertTrue(!empty($this->controller->Post->validationErrors));
+		$this->assertContains('This field cannot be left blank', $this->controller->Post->validationErrors['title']);
+		$this->assertEquals(3, $this->controller->Post->find('count'));
+		$this->assertTrue(empty($this->headers));
+	}
 }
